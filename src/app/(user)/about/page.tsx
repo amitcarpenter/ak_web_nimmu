@@ -1,215 +1,331 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
-import { FiUsers, FiTarget, FiAward, FiHeart, FiTruck, FiShield } from "react-icons/fi";
+import { FiArrowRight, FiMapPin } from "react-icons/fi";
 
 export default function AboutPage() {
-  const stats = [
-    { icon: FiUsers, value: "50K+", label: "Happy Customers" },
-    { icon: FiTruck, value: "100+", label: "Delivery Partners" },
-    { icon: FiAward, value: "500+", label: "Restaurants" },
-    { icon: FiHeart, value: "1M+", label: "Orders Delivered" },
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger"),
+    ]).then(([gsapModule, scrollTriggerModule]) => {
+      const gsap = gsapModule.gsap;
+      const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.utils.toArray(".fade-in-up").forEach((element: any) => {
+        const rect = element.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight * 0.85;
+        
+        if (isInViewport) {
+          element.classList.add("gsap-animated");
+        } else {
+          gsap.set(element, { opacity: 0, y: 60 });
+          gsap.to(element, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: element,
+              start: "top 85%",
+              toggleActions: "play none none none",
+              once: true,
+            },
+            onComplete: () => {
+              if (element) element.classList.add("gsap-animated");
+            },
+          });
+        }
+      });
+    }).catch(() => {
+      // Content stays visible if GSAP fails
+    });
+  }, []);
+
+  const philosophy = [
+    { step: "Concept", description: "Ideation and strategic planning", icon: "💡" },
+    { step: "Strategy", description: "Data-driven approach and roadmap", icon: "🎯" },
+    { step: "Experience", description: "Execution with attention to detail", icon: "✨" },
+    { step: "Impact", description: "Measurable results and transformation", icon: "🚀" },
   ];
 
-  const values = [
+  const leadership = [
     {
-      icon: FiHeart,
-      title: "Customer First",
-      description: "We prioritize our customers' satisfaction above everything else.",
+      name: "Leadership Team",
+      role: "Founder & CEO",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80",
+      bio: "Visionary leader with 15+ years in event management and marketing",
     },
     {
-      icon: FiShield,
-      title: "Quality Assurance",
-      description: "Every product is carefully selected and quality-checked before delivery.",
+      name: "Creative Director",
+      role: "Head of Design",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&q=80",
+      bio: "Award-winning creative professional specializing in experiential design",
     },
     {
-      icon: FiTruck,
-      title: "Fast Delivery",
-      description: "We ensure timely delivery of fresh food to your doorstep.",
-    },
-    {
-      icon: FiTarget,
-      title: "Innovation",
-      description: "Constantly improving our platform to serve you better.",
+      name: "Operations Head",
+      role: "COO",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&q=80",
+      bio: "Expert in logistics and on-ground execution across India",
     },
   ];
 
-  const team = [
-    {
-      name: "John Doe",
-      role: "CEO & Founder",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop",
-    },
-    {
-      name: "Jane Smith",
-      role: "CTO",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop",
-    },
-    {
-      name: "Mike Johnson",
-      role: "Head of Operations",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
-    },
-    {
-      name: "Sarah Williams",
-      role: "Head of Marketing",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop",
-    },
+  const presence = [
+    { region: "North India", cities: ["Delhi", "Punjab", "Haryana", "Uttar Pradesh"] },
+    { region: "South India", cities: ["Karnataka", "Tamil Nadu", "Kerala", "Telangana"] },
+    { region: "West India", cities: ["Maharashtra", "Gujarat", "Rajasthan"] },
+    { region: "East India", cities: ["West Bengal", "Odisha", "Bihar", "Jharkhand"] },
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-20">
+      <section className="relative py-20 bg-gradient-to-br from-dark via-gray-900 to-dark text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-6">
-              About FoodHub
+          <div className="max-w-4xl mx-auto text-center fade-in-up">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              Who We Are
             </h1>
-            <p className="text-xl text-dark-5 dark:text-dark-6 mb-8">
-              Your trusted partner for fresh food delivery. We connect you with the best restaurants and grocery stores in your city.
+            <p className="text-xl text-gray-300 leading-relaxed">
+              ATLA KNOTS EVENTIVE is a premier event management and experiential marketing agency
+              with over 12 years of excellence in creating impactful experiences across India.
             </p>
-            <div className="flex items-center justify-center gap-2 text-primary">
-              <span className="text-2xl">🍽️</span>
-              <span className="font-semibold">Delivering Happiness, One Meal at a Time</span>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-white dark:bg-gray-dark">
+      {/* Mission & Vision - Split Screen */}
+      <section className="py-20 bg-white dark:bg-gray-dark">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className="text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                >
-                  <Icon className="h-8 w-8 text-primary mx-auto mb-4" />
-                  <div className="text-3xl font-bold text-dark dark:text-white mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-dark-5 dark:text-dark-6">{stat.label}</div>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left: Mission/Vision */}
+            <div className="fade-in-up">
+              <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-8">
+                Our Mission & Vision
+              </h2>
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-primary mb-4">Mission</h3>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                    To design and deliver exceptional experiences that create lasting impact,
+                    connecting brands with their audiences through innovative events, activations,
+                    and strategic communications.
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Our Story Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-dark dark:text-white mb-8 text-center">
-              Our Story
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-dark-5 dark:text-dark-6 mb-6">
-                FoodHub was founded in 2020 with a simple mission: to make fresh, quality food accessible to everyone. 
-                What started as a small local delivery service has grown into a trusted platform connecting thousands of 
-                customers with hundreds of restaurants and grocery stores.
-              </p>
-              <p className="text-dark-5 dark:text-dark-6 mb-6">
-                We believe that everyone deserves access to fresh, healthy, and delicious food. Our platform makes it 
-                easy to discover new restaurants, order your favorite meals, and get everything delivered right to your 
-                doorstep. Whether you're looking for a quick lunch, a family dinner, or weekly groceries, FoodHub has you covered.
-              </p>
-              <p className="text-dark-5 dark:text-dark-6">
-                Today, we're proud to serve customers across multiple cities, working with the best restaurants and 
-                maintaining the highest standards of quality and service. Our commitment to excellence drives everything we do.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Values Section */}
-      <section className="py-16 bg-white dark:bg-gray-dark">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-dark dark:text-white mb-12 text-center">
-            Our Values
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => {
-              const Icon = value.icon;
-              return (
-                <div
-                  key={index}
-                  className="text-center p-6 border border-stroke dark:border-stroke-dark rounded-lg hover:shadow-lg transition-shadow"
-                >
-                  <Icon className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-dark dark:text-white mb-3">
-                    {value.title}
-                  </h3>
-                  <p className="text-dark-5 dark:text-dark-6">{value.description}</p>
+                <div>
+                  <h3 className="text-2xl font-bold text-primary mb-4">Vision</h3>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                    To be India's most trusted partner for experiential marketing and event
+                    management, recognized for creativity, excellence, and measurable results
+                    across urban and rural markets.
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+              </div>
+            </div>
 
-      {/* Team Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-dark dark:text-white mb-12 text-center">
-            Meet Our Team
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <div
-                key={index}
-                className="text-center p-6 bg-white dark:bg-gray-dark border border-stroke dark:border-stroke-dark rounded-lg hover:shadow-lg transition-shadow"
-              >
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+            {/* Right: Cinematic Images */}
+            <div className="fade-in-up">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl">
                   <Image
-                    src={member.image}
-                    alt={member.name}
-                    width={128}
-                    height={128}
-                    className="w-full h-full object-cover"
+                    src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&h=600&fit=crop&q=80"
+                    alt="Corporate Event"
+                    fill
+                    className="object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-semibold text-dark dark:text-white mb-2">
-                  {member.name}
-                </h3>
-                <p className="text-primary">{member.role}</p>
+                <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl mt-8">
+                  <Image
+                    src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=600&fit=crop&q=80"
+                    alt="Exhibition Pavilion"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl -mt-4">
+                  <Image
+                    src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=600&fit=crop&q=80"
+                    alt="Rural Awareness Campaign"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                  <Image
+                    src="https://images.unsplash.com/photo-1478146896981-3e85b5775864?w=600&h=600&fit=crop&q=80"
+                    alt="Brand Activation"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Philosophy - Timeline */}
+      <section className="py-20 bg-gray-100 dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+              Our Philosophy
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              A proven process from concept to impact
+            </p>
+          </div>
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-4 gap-8">
+              {philosophy.map((item, index) => (
+                <div key={index} className="fade-in-up text-center relative">
+                  {index < philosophy.length - 1 && (
+                    <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-primary transform translate-x-4" />
+                  )}
+                  <div className="relative z-10">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-primary rounded-full text-4xl mb-4 shadow-lg">
+                      {item.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold text-dark dark:text-white mb-2">
+                      {item.step}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-12 text-center fade-in-up">
+              <div className="inline-flex items-center space-x-4 text-lg text-gray-600 dark:text-gray-400">
+                <span className="font-bold text-primary">Concept</span>
+                <FiArrowRight className="text-primary" />
+                <span className="font-bold text-primary">Strategy</span>
+                <FiArrowRight className="text-primary" />
+                <span className="font-bold text-primary">Experience</span>
+                <FiArrowRight className="text-primary" />
+                <span className="font-bold text-primary">Impact</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership Spotlight */}
+      <section className="py-20 bg-white dark:bg-gray-dark">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+              Leadership Spotlight
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Meet the visionaries driving our success
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {leadership.map((leader, index) => (
+              <div
+                key={index}
+                className="fade-in-up group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-dark shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  <Image
+                    src={leader.image}
+                    alt={leader.name}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-sm">{leader.bio}</p>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-2xl font-bold text-dark dark:text-white mb-2">
+                    {leader.name}
+                  </h3>
+                  <p className="text-primary font-semibold mb-2">{leader.role}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">{leader.bio}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-primary/10">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-dark dark:text-white mb-4">
-            Join Us on Our Journey
-          </h2>
-          <p className="text-xl text-dark-5 dark:text-dark-6 mb-8 max-w-2xl mx-auto">
-            Whether you're a customer, restaurant partner, or potential team member, we'd love to have you with us.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="/contact"
-              className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Get in Touch
-            </a>
-            <a
-              href="/careers"
-              className="px-8 py-3 border-2 border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors"
-            >
-              View Careers
-            </a>
+      {/* Our Presence - Interactive Map */}
+      <section className="py-20 bg-gray-100 dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+              Our Presence
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Pan-India coverage across urban and rural regions
+            </p>
+          </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {presence.map((region, index) => (
+                <div
+                  key={index}
+                  className="fade-in-up bg-white dark:bg-gray-dark rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group cursor-pointer"
+                >
+                  <div className="flex items-center mb-4">
+                    <FiMapPin className="text-primary text-2xl mr-2" />
+                    <h3 className="text-xl font-bold text-dark dark:text-white">
+                      {region.region}
+                    </h3>
+                  </div>
+                  <ul className="space-y-2">
+                    {region.cities.map((city, cityIndex) => (
+                      <li
+                        key={cityIndex}
+                        className="text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors"
+                      >
+                        {city}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="mt-12 text-center fade-in-up">
+              <div className="inline-block bg-primary text-white px-8 py-4 rounded-lg font-bold text-lg">
+                200+ Cities Covered | 1000+ Villages Reached
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Values */}
+      <section className="py-20 bg-white dark:bg-gray-dark">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12 fade-in-up">
+              <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+                Our Core Values
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {[
+                { title: "Excellence", desc: "Uncompromising quality in every project" },
+                { title: "Innovation", desc: "Creative solutions that stand out" },
+                { title: "Integrity", desc: "Transparent and ethical practices" },
+                { title: "Impact", desc: "Measurable results that matter" },
+              ].map((value, index) => (
+                <div key={index} className="fade-in-up p-6 bg-gray-100 dark:bg-gray-900 rounded-xl">
+                  <h3 className="text-2xl font-bold text-primary mb-2">{value.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400">{value.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
     </div>
   );
 }
-

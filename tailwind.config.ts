@@ -66,19 +66,19 @@ const config: Config = {
             7: "#F9FEFB",
           },
         },
-        // Dhol Pink Shades (Main theme)
-        dhol: {
-          DEFAULT: "#E84C6F",
-          50: "#FFF5F7",
-          100: "#FFE4EC",
-          200: "#FFCCD9",
-          300: "#FFB3C6",
-          400: "#FF99B3",
-          500: "#E84C6F", // Main
-          600: "#D63A5C",
-          700: "#C23552",
-          800: "#9E2A42",
-          900: "#7A1F33",
+        // ATLA KNOTS Red Shades (Main theme)
+        atla: {
+          DEFAULT: "#DC2626",
+          50: "#FEF2F2",
+          100: "#FEE2E2",
+          200: "#FECACA",
+          300: "#FCA5A5",
+          400: "#F87171",
+          500: "#EF4444",
+          600: "#DC2626", // Main
+          700: "#B91C1C",
+          800: "#991B1B",
+          900: "#7F1D1D",
         },
         red: {
           DEFAULT: "#EF4444",
@@ -384,6 +384,10 @@ const config: Config = {
           "0%": { transform: "translateX(100%)", opacity: "0" },
           "100%": { transform: "translateX(0)", opacity: "1" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         linspin: "linspin 1568.2353ms linear infinite",
@@ -403,6 +407,7 @@ const config: Config = {
         line2: "line-revert 8s infinite linear",
         line3: "line 7s infinite linear",
         "slide-in": "slideIn 0.3s ease-out",
+        marquee: "marquee 40s linear infinite",
       },
     },
   },

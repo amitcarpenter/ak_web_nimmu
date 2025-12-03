@@ -14,12 +14,8 @@ export default function AccountPage() {
 
   const menuItems = [
     { icon: FiUser, label: "Personal Information", href: "/account/personal", description: "Update your name, email, and phone" },
-    { icon: FiMapPin, label: "Addresses", href: "/account/addresses", description: "Manage delivery addresses" },
-    { icon: FiCreditCard, label: "Payment Methods", href: "/account/payment-methods", description: "Saved cards and payment options" },
-    { icon: FiHeart, label: "Wishlist", href: "/wishlist", description: "Your saved items" },
-    { icon: FiPackage, label: "Orders", href: "/orders", description: "View order history" },
     { icon: FiBell, label: "Notifications", href: "/notifications", description: "Manage notification preferences" },
-    { icon: FiSettings, label: "Preferences", href: "/account/preferences", description: "Dietary preferences and settings" },
+    { icon: FiSettings, label: "Preferences", href: "/account/preferences", description: "Account preferences and settings" },
     { icon: FiHelpCircle, label: "Help & Support", href: "/support", description: "Get help and contact support" },
   ];
 

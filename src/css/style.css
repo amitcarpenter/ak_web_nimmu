@@ -6,6 +6,10 @@
   body {
     @apply bg-gray-2 text-dark-5 dark:bg-[#020D1A] dark:text-dark-6;
   }
+  
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer utilities {
@@ -17,6 +21,50 @@
   .no-scrollbar {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Content visible by default - GSAP will override if it loads */
+  .fade-in-up {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    visibility: visible !important;
+  }
+  
+  /* Force visibility even if GSAP sets opacity */
+  .fade-in-up[style*="opacity: 0"],
+  .fade-in-up[style*="opacity:0"] {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Ensure content is visible in all cases */
+  body .fade-in-up {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
    .custom-scrollbar {

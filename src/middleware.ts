@@ -5,13 +5,12 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Public routes that don't need authentication (user-facing pages)
-  const publicRoutes = ['/about', '/features', '/pricing', '/contact', '/stores'];
+  const publicRoutes = ['/about', '/services', '/case-studies', '/clients', '/contact', '/blog', '/careers'];
   
   // User panel routes (public, no auth required for browsing)
   const userRoutes = [
-    '/categories', '/products', '/search', '/cart', '/checkout', 
-    '/offers', '/wishlist', '/support', '/terms', '/privacy', 
-    '/delivery-policy', '/refund-policy', '/store-locator', '/vendors'
+    '/support', '/terms', '/privacy', 
+    '/delivery-policy', '/refund-policy'
   ];
   
   // Auth routes (login, signup, forgot password, etc.)

@@ -1,321 +1,592 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FiClock, FiStar, FiTruck, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiPlay } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 export default function HomePage() {
-  const categories = [
-    { id: 1, name: "Prepared Meals", slug: "prepared-meals", image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=600&fit=crop&q=90", count: 45 },
-    { id: 2, name: "Groceries", slug: "groceries", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=600&fit=crop&q=90", count: 120 },
-    { id: 3, name: "Snacks", slug: "snacks", image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&h=600&fit=crop&q=90", count: 89 },
-    { id: 4, name: "Beverages", slug: "beverages", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&h=600&fit=crop&q=90", count: 67 },
-    { id: 5, name: "Dairy & Eggs", slug: "dairy-eggs", image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=600&h=600&fit=crop&q=90", count: 34 },
-    { id: 6, name: "Fruits & Vegetables", slug: "fruits-vegetables", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&h=600&fit=crop&q=90", count: 78 },
-  ];
+  const heroRef = useRef<HTMLDivElement>(null);
 
-  const featuredProducts = [
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger"),
+    ]).then(([gsapModule, scrollTriggerModule]) => {
+      const gsap = gsapModule.gsap;
+      const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+      gsap.registerPlugin(ScrollTrigger);
+      
+      // Mark GSAP as ready
+      document.body.classList.add("gsap-ready");
+
+      // Ensure hero elements are visible first
+      const heroTitle = document.querySelector(".hero-title");
+      const heroTagline = document.querySelector(".hero-tagline");
+      const heroCta = document.querySelector(".hero-cta");
+      
+      if (heroTitle) {
+        (heroTitle as HTMLElement).style.opacity = "1";
+        (heroTitle as HTMLElement).style.visibility = "visible";
+      }
+      if (heroTagline) {
+        (heroTagline as HTMLElement).style.opacity = "1";
+        (heroTagline as HTMLElement).style.visibility = "visible";
+      }
+      if (heroCta) {
+        (heroCta as HTMLElement).style.opacity = "1";
+        (heroCta as HTMLElement).style.visibility = "visible";
+      }
+
+      if (heroRef.current) {
+        // Kill any existing animations first
+        gsap.killTweensOf([".hero-title", ".hero-tagline", ".hero-cta"]);
+        
+        const tl = gsap.timeline();
+        tl.fromTo(".hero-title", 
+          { opacity: 1, y: 0 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.1,
+            ease: "power3.out",
+          }
+        )
+          .fromTo(
+            ".hero-tagline",
+            { opacity: 1, y: 0 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.1,
+              ease: "power3.out",
+            },
+            "-=0.1"
+          )
+          .fromTo(
+            ".hero-cta",
+            { opacity: 1, y: 0 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.1,
+              ease: "power3.out",
+            },
+            "-=0.1"
+          );
+      }
+
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        gsap.utils.toArray(".fade-in-up").forEach((element: any) => {
+          // Ensure element is visible first
+          if (element) {
+            element.style.opacity = "1";
+            element.style.visibility = "visible";
+            element.style.transform = "translateY(0)";
+          }
+          
+          // Check if element is already in viewport
+          const rect = element.getBoundingClientRect();
+          const isInViewport = rect.top < window.innerHeight * 0.85;
+          
+          if (isInViewport) {
+            // Element already visible, just mark as animated
+            element.classList.add("gsap-animated");
+          } else {
+            // Animate on scroll (but keep visible)
+            gsap.to(element, {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: element,
+                start: "top 85%",
+                toggleActions: "play none none none",
+                once: true,
+              },
+              onComplete: () => {
+                if (element) {
+                  element.classList.add("gsap-animated");
+                  element.style.opacity = "1";
+                  element.style.visibility = "visible";
+                }
+              },
+            });
+          }
+        });
+      }, 100);
+    }).catch((error) => {
+      // If GSAP fails to load, ensure content is visible
+      console.warn("GSAP failed to load, content will be visible without animation:", error);
+      document.body.classList.remove("gsap-ready");
+      
+      // Force all fade-in-up elements to be visible
+      document.querySelectorAll(".fade-in-up").forEach((el: any) => {
+        if (el) {
+          el.style.opacity = "1";
+          el.style.visibility = "visible";
+          el.style.transform = "translateY(0)";
+        }
+      });
+    });
+  }, []);
+
+  const coreExpertise = [
     {
       id: 1,
-      name: "Chicken Biryani Combo",
-      price: 299,
-      originalPrice: 399,
-      rating: 4.5,
-      reviews: 234,
-      image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&h=600&fit=crop&q=90",
-      prepTime: "30 min",
-      badge: "Best Seller",
+      title: "Event & Entertainment",
+      description: "Corporate events, social gatherings, brand launches with complete decor and production management",
+      icon: "🎉",
     },
     {
       id: 2,
-      name: "Fresh Vegetable Pack",
-      price: 199,
-      originalPrice: 249,
-      rating: 4.8,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&h=600&fit=crop&q=90",
-      prepTime: "Same Day",
-      badge: "Fresh",
+      title: "Experiential Marketing",
+      description: "Brand activations, roadshows, sensory experiences, and innovative module designs",
+      icon: "🚀",
     },
     {
       id: 3,
-      name: "Breakfast Combo",
-      price: 149,
-      originalPrice: 199,
-      rating: 4.6,
-      reviews: 189,
-      image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&h=600&fit=crop&q=90",
-      prepTime: "20 min",
-      badge: "Popular",
+      title: "Rural Communication",
+      description: "Door-to-door awareness, govt scheme activations, street plays, and wall painting",
+      icon: "🌾",
     },
     {
       id: 4,
-      name: "Organic Fruits Basket",
-      price: 399,
-      originalPrice: 499,
-      rating: 4.7,
-      reviews: 98,
-      image: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=600&h=600&fit=crop&q=90",
-      prepTime: "Same Day",
-      badge: "Organic",
+      title: "Exhibition Design",
+      description: "Govt pavilions, corporate stalls with 3D visualization and complete build operations",
+      icon: "🏛️",
+    },
+    {
+      id: 5,
+      title: "Development Communication",
+      description: "Strategic communication campaigns for social impact and awareness",
+      icon: "📢",
     },
   ];
 
-  const offers = [
+  const whyChooseUs = [
+    {
+      title: "Strategy",
+      description: "Data-driven insights and strategic planning",
+      icon: "🎯",
+    },
+    {
+      title: "Creative",
+      description: "Innovative designs and concepts",
+      icon: "✨",
+    },
+    {
+      title: "Production",
+      description: "End-to-end execution excellence",
+      icon: "🏭",
+    },
+    {
+      title: "Delivery",
+      description: "On-time, on-budget, on-brand delivery",
+      icon: "🚚",
+    },
+  ];
+
+  const stats = [
+    { value: "12+", label: "Years Experience" },
+    { value: "500+", label: "Successful Events" },
+    { value: "50+", label: "Govt & Corporate Clients" },
+    { value: "Pan-India", label: "Coverage" },
+  ];
+
+  const featuredProjects = [
     {
       id: 1,
-      title: "50% OFF on First Order",
-      description: "Use code FIRST50",
-      image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200&h=600&fit=crop&q=90",
-      link: "/offers",
+      title: "Corporate Brand Launch",
+      category: "Events",
+      image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop&q=80",
+      stats: { reach: "50K+", engagement: "85%" },
     },
     {
       id: 2,
-      title: "Free Delivery on Orders Above ₹500",
-      description: "Valid till month end",
-      image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=600&fit=crop&q=90",
-      link: "/offers",
+      title: "Rural Awareness Campaign",
+      category: "Rural",
+      image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=600&fit=crop&q=80",
+      stats: { villages: "200+", impact: "1M+" },
+    },
+    {
+      id: 3,
+      title: "Exhibition Pavilion Design",
+      category: "Exhibitions",
+      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop&q=80",
+      stats: { visitors: "100K+", awards: "3" },
+    },
+    {
+      id: 4,
+      title: "Experiential Roadshow",
+      category: "Experiential",
+      image: "https://images.unsplash.com/photo-1478146896981-3e85b5775864?w=800&h=600&fit=crop&q=80",
+      stats: { cities: "25+", engagement: "92%" },
     },
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-transparent dark:from-primary/20 dark:via-primary/10">
-        <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-dark dark:text-white mb-6">
-                Fresh Food Delivered to Your{" "}
-                <span className="text-primary">Doorstep</span>
-              </h1>
-              <p className="text-lg text-dark-5 dark:text-dark-6 mb-8">
-                Order fresh groceries, prepared meals, and more. Fast delivery, great prices, and quality you can trust.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/categories"
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Shop Now
-                  <FiArrowRight className="ml-2" />
-                </Link>
-                <Link
-                  href="/subscriptions"
-                  className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors"
-                >
-                  View Subscriptions
-                </Link>
-              </div>
-            </div>
-            <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=800&fit=crop"
-                alt="Fresh Food Delivery"
-                fill
-                className="object-cover rounded-2xl"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
-            </div>
+    <div className="min-h-screen pt-20">
+      <motion.section
+        key="hero-section"
+        ref={heroRef}
+        className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-dark to-gray-900"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-10" />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-40"
+          >
+            <source src="https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_25fps.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        <div className="relative z-20 container mx-auto px-4 text-center">
+          <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight" style={{ 
+            textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
+            color: '#ffffff',
+            opacity: 1,
+            visibility: 'visible'
+          }}>
+            <span className="text-white">We Design</span>
+            <br />
+            <span className="text-primary" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(220,38,38,0.3)' }}>Experiences.</span>
+            <br />
+            <span className="text-white">We Deliver</span>
+            <br />
+            <span className="text-primary" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(220,38,38,0.3)' }}>Impact.</span>
+          </h1>
+          <p className="hero-tagline text-xl md:text-2xl mb-8 max-w-3xl mx-auto" style={{ 
+            color: '#ffffff',
+            textShadow: '1px 1px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5)',
+            opacity: 1,
+            visibility: 'visible'
+          }}>
+            Creating memorable events, activations, and communications that inspire and transform
+          </p>
+          <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center" style={{ opacity: 1, visibility: 'visible' }}>
+            <Link
+              href="/services"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white rounded-lg font-bold text-lg hover:bg-primary-dark transition-all duration-300 hover:scale-105 shadow-2xl"
+            >
+              View Our Expertise
+              <FiArrowRight className="ml-2" />
+            </Link>
+            <Link
+              href="/case-studies"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-md text-white rounded-lg font-bold text-lg hover:bg-white/20 transition-all duration-300 border-2 border-white/20"
+            >
+              <FiPlay className="mr-2" />
+              Watch Our Work
+            </Link>
           </div>
         </div>
-      </section>
 
-      {/* Quick Stats */}
-      <section className="border-y border-stroke dark:border-stroke-dark bg-white dark:bg-gray-dark">
-        <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">10K+</div>
-              <div className="text-sm text-dark-5 dark:text-dark-6">Happy Customers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">500+</div>
-              <div className="text-sm text-dark-5 dark:text-dark-6">Products</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">30min</div>
-              <div className="text-sm text-dark-5 dark:text-dark-6">Avg Delivery</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">24/7</div>
-              <div className="text-sm text-dark-5 dark:text-dark-6">Support</div>
-            </div>
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
+            <div className="w-1 h-3 bg-white/50 rounded-full" />
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Categories Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white">Shop by Category</h2>
-          <Link
-            href="/categories"
-            className="text-primary hover:underline flex items-center"
-          >
-            View All
-            <FiArrowRight className="ml-1" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href={`/categories/${category.slug}`}
-              className="group bg-white dark:bg-gray-dark border border-stroke dark:border-stroke-dark rounded-lg p-4 hover:shadow-lg transition-all hover:border-primary"
-            >
-              <div className="aspect-square rounded-lg mb-3 overflow-hidden group-hover:scale-105 transition-transform">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  width={200}
-                  height={200}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-semibold text-dark dark:text-white mb-1">{category.name}</h3>
-              <p className="text-sm text-dark-5 dark:text-dark-6">{category.count} items</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Offers Banner */}
-      <section className="container mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-2 gap-6">
-          {offers.map((offer) => (
-            <Link
-              key={offer.id}
-              href={offer.link}
-              className="relative group overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/80 text-white p-8 hover:shadow-xl transition-shadow"
-            >
-              <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-2">{offer.title}</h3>
-                <p className="text-white/90">{offer.description}</p>
-                <button className="mt-4 px-4 py-2 bg-white text-primary rounded-lg font-medium hover:bg-white/90 transition-colors">
-                  Shop Now
-                </button>
-              </div>
-              <div className="absolute right-0 top-0 h-full w-1/2 opacity-20">
-                <Image
-                  src={offer.image}
-                  alt={offer.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Products / Recommended Combos */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white">Recommended for You</h2>
-          <Link
-            href="/categories"
-            className="text-primary hover:underline flex items-center"
-          >
-            View All
-            <FiArrowRight className="ml-1" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
-            <Link
-              key={product.id}
-              href={`/products/${product.id}`}
-              className="group bg-white dark:bg-gray-dark border border-stroke dark:border-stroke-dark rounded-lg overflow-hidden hover:shadow-lg transition-all"
-            >
-              <div className="relative aspect-square overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {product.badge && (
-                  <div className="absolute top-2 left-2 px-2 py-1 bg-primary text-white text-xs font-semibold rounded z-10">
-                    {product.badge}
-                  </div>
-                )}
-                <div className="absolute top-2 right-2 z-10">
-                  <button className="p-2 bg-white/90 dark:bg-gray-dark/90 rounded-full hover:bg-primary hover:text-white transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-dark dark:text-white mb-2 line-clamp-1">{product.name}</h3>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="flex items-center">
-                    <FiStar className="text-yellow-400 fill-yellow-400" />
-                    <span className="ml-1 text-sm font-medium">{product.rating}</span>
-                  </div>
-                  <span className="text-sm text-dark-5 dark:text-dark-6">({product.reviews})</span>
-                  <div className="flex items-center ml-auto text-sm text-dark-5 dark:text-dark-6">
-                    <FiClock className="mr-1" />
-                    {product.prepTime}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-dark dark:text-white">₹{product.price}</span>
-                    {product.originalPrice && (
-                      <span className="text-sm text-dark-5 dark:text-dark-6 line-through">₹{product.originalPrice}</span>
-                    )}
-                  </div>
-                  <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="bg-gray-2 dark:bg-gray-dark py-12">
+      <section className="bg-dark text-white py-12 border-y border-gray-800">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white text-center mb-8">
-            Why Choose Us?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-gray-dark rounded-lg p-6 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                <FiTruck className="text-2xl text-primary" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center fade-in-up">
+                <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
+                <div className="text-sm md:text-base text-gray-400 uppercase tracking-wide">{stat.label}</div>
               </div>
-              <h3 className="font-semibold text-dark dark:text-white mb-2">Fast Delivery</h3>
-              <p className="text-sm text-dark-5 dark:text-dark-6">
-                Get your orders delivered within 30 minutes in most areas
-              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white dark:bg-gray-dark">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+              Our Core Expertise
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Comprehensive solutions for events, marketing, and communication needs
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {coreExpertise.map((expertise, index) => (
+              <motion.div
+                key={expertise.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                }}
+                className="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-dark shadow-xl transition-all duration-300 cursor-pointer border border-gray-200 dark:border-gray-700"
+              >
+                {/* Half Red Background */}
+                <div className="absolute top-0 left-0 right-0 h-1/2 bg-primary" />
+                {/* White Bottom Half */}
+                <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-white dark:bg-gray-dark" />
+                
+                <div className="relative z-10 p-8">
+                  {/* Top Red Section */}
+                  <div className="mb-6">
+                    <div className="text-5xl mb-4 text-white">{expertise.icon}</div>
+                    <h3 className="text-2xl font-bold text-white">{expertise.title}</h3>
+                  </div>
+                  
+                  {/* Bottom White Section */}
+                  <div className="pt-6 border-t-2 border-primary/20">
+                    <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{expertise.description}</p>
+                    <Link
+                      href={`/services#${expertise.title.toLowerCase().replace(/\s+/g, "-")}`}
+                      className="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition-colors group/link"
+                    >
+                      Learn More
+                      <FiArrowRight className="ml-2 group-hover/link:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-gray-100 dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+              Why Choose Us
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Our proven process from concept to impact
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {whyChooseUs.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ 
+                  y: -8,
+                  scale: 1.02,
+                }}
+                className="text-center p-8 bg-white dark:bg-gray-dark rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="text-5xl mb-4">{item.icon}</div>
+                <h3 className="text-2xl font-bold text-dark dark:text-white mb-3">{item.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-12 text-center fade-in-up">
+            <div className="inline-flex items-center space-x-4 text-lg text-gray-600 dark:text-gray-400">
+              <span className="font-bold text-primary">Strategy</span>
+              <FiArrowRight className="text-primary" />
+              <span className="font-bold text-primary">Creative</span>
+              <FiArrowRight className="text-primary" />
+              <span className="font-bold text-primary">Production</span>
+              <FiArrowRight className="text-primary" />
+              <span className="font-bold text-primary">Delivery</span>
             </div>
-            <div className="bg-white dark:bg-gray-dark rounded-lg p-6 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-dark dark:text-white mb-2">Fresh & Quality</h3>
-              <p className="text-sm text-dark-5 dark:text-dark-6">
-                All products are fresh and quality-checked before delivery
-              </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-dark text-white overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Work in Action</h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Past events, rural campaigns, and activations that made an impact
+            </p>
+          </div>
+          <div className="relative">
+            <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{ scrollSnapType: "x mandatory" }}>
+              {[
+                { id: 1, image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&h=800&fit=crop&q=80", title: "Corporate Event" },
+                { id: 2, image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=800&fit=crop&q=80", title: "Exhibition Setup" },
+                { id: 3, image: "https://images.unsplash.com/photo-1478146896981-3e85b5775864?w=1200&h=800&fit=crop&q=80", title: "Brand Activation" },
+                { id: 4, image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&h=800&fit=crop&q=80", title: "Rural Campaign" },
+                { id: 5, image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&q=80", title: "Product Launch" },
+                { id: 6, image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&h=800&fit=crop&q=80", title: "Award Ceremony" },
+              ].map((item) => (
+                <div
+                  key={item.id}
+                  className="flex-shrink-0 w-full md:w-2/3 lg:w-1/2 rounded-2xl overflow-hidden shadow-2xl"
+                  style={{ scrollSnapAlign: "start" }}
+                >
+                  <div className="relative aspect-video">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
+                      <p className="text-gray-300">Creating memorable experiences</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="bg-white dark:bg-gray-dark rounded-lg p-6 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-dark dark:text-white mb-2">Best Prices</h3>
-              <p className="text-sm text-dark-5 dark:text-dark-6">
-                Competitive prices with regular offers and discounts
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-white dark:bg-gray-dark border-y border-gray-200 dark:border-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 fade-in-up">
+            <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white mb-4">
+              Trusted By
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Government & Corporate Partners
+            </p>
+          </div>
+          <div className="relative overflow-hidden w-full">
+            <div className="flex animate-marquee whitespace-nowrap" style={{ width: "fit-content" }}>
+              {[
+                "Government of India",
+                "State Governments",
+                "Fortune 500 Companies",
+                "Leading Brands",
+                "NGOs",
+                "Public Sector Units",
+              ].map((client, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 px-8 py-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-center mx-6"
+                >
+                  <span className="text-lg font-semibold text-dark dark:text-white whitespace-nowrap">{client}</span>
+                </div>
+              ))}
+              {[
+                "Government of India",
+                "State Governments",
+                "Fortune 500 Companies",
+                "Leading Brands",
+                "NGOs",
+                "Public Sector Units",
+              ].map((client, index) => (
+                <div
+                  key={`dup-${index}`}
+                  className="flex-shrink-0 px-8 py-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-center mx-6"
+                >
+                  <span className="text-lg font-semibold text-dark dark:text-white whitespace-nowrap">{client}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white dark:bg-gray-dark">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark dark:text-white mb-4">
+              Featured Projects
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Showcasing our best work and impact
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {featuredProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+              >
+                <Link
+                  href={`/case-studies/${project.id}`}
+                  className="group relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 block"
+                >
+                <div className="relative aspect-video">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <span className="inline-block px-3 py-1 bg-primary rounded-full text-sm font-semibold mb-2">
+                      {project.category}
+                    </span>
+                    <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                    <div className="flex items-center space-x-4 text-sm">
+                      {Object.entries(project.stats).map(([key, value]) => (
+                        <div key={key}>
+                          <span className="font-bold">{value}</span> {key}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+          <div className="text-center mt-12 fade-in-up">
+            <Link
+              href="/case-studies"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white rounded-lg font-bold text-lg hover:bg-primary-dark transition-all duration-300 hover:scale-105"
+            >
+              View All Case Studies
+              <FiArrowRight className="ml-2" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-gradient-to-br from-dark via-gray-900 to-dark text-white relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-20" 
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center fade-in-up">
+            <div className="backdrop-blur-xl bg-white/10 rounded-3xl p-12 border border-white/20 shadow-2xl">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Create Something Amazing?
+              </h2>
+              <p className="text-xl text-gray-300 mb-8">
+                Let's discuss how we can bring your vision to life with our expertise and passion
               </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center px-10 py-5 bg-primary text-white rounded-lg font-bold text-lg hover:bg-primary-dark transition-all duration-300 hover:scale-105 shadow-2xl"
+              >
+                Get Started Today
+                <FiArrowRight className="ml-2" />
+              </Link>
             </div>
           </div>
         </div>
@@ -323,4 +594,3 @@ export default function HomePage() {
     </div>
   );
 }
-

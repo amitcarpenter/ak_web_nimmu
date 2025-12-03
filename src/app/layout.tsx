@@ -14,11 +14,11 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | FoodHub",
-    default: "FoodHub - E-Commerce Platform",
+    template: "%s | ATLA KNOTS EVENTIVE",
+    default: "ATLA KNOTS EVENTIVE - We Design Experiences. We Deliver Impact.",
   },
   description:
-    "FoodHub E-Commerce Platform - Manage orders, products, inventory, customers, and more.",
+    "Premier event management and experiential marketing agency. Creating memorable events, activations, and communications across India. Event & Entertainment, Experiential Marketing, Rural Communication, Exhibition Design.",
   icons: {
     icon: "/images/favicon.svg",
     shortcut: "/images/favicon.svg",

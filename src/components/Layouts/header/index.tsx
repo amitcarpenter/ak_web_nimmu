@@ -22,7 +22,7 @@ export function Header() {
       if (pathname.includes('/system')) return 'System Settings';
       return 'Super Admin';
     } else if (pathname.startsWith('/admin')) {
-      if (pathname === '/admin/dashboard') return 'E-Commerce Dashboard';
+      if (pathname === '/admin/dashboard') return 'Admin Dashboard';
       if (pathname.includes('/orders')) return 'Orders Management';
       if (pathname.includes('/products')) return 'Products Management';
       if (pathname.includes('/categories')) return 'Categories';
@@ -39,9 +39,9 @@ export function Header() {
       if (pathname.includes('/notifications')) return 'Notifications';
       if (pathname.includes('/settings')) return 'Settings';
       if (pathname.includes('/profile')) return 'Admin Profile';
-      return 'FoodHub Admin';
+      return 'ATLA KNOTS Admin';
     }
-    return 'FoodHub';
+    return 'ATLA KNOTS EVENTIVE';
   };
 
   return (
@@ -57,10 +57,10 @@ export function Header() {
       {isMobile && (
         <Link href={"/"} className="ml-2 max-[430px]:hidden min-[375px]:ml-4">
           <Image
-            src={"/images/logo/food_hub_logo.png"}
+            src={"/images/logo/new_ak_logo.png"}
             width={48}
             height={48}
-            alt="FoodHub"
+            alt="ATLA KNOTS EVENTIVE"
             role="presentation"
             className="h-12 w-auto"
           />
@@ -71,7 +71,7 @@ export function Header() {
         <h1 className="mb-0.5 text-heading-5 font-bold text-dark dark:text-white">
           {getPageTitle()}
         </h1>
-        <p className="font-medium text-primary">FoodHub E-Commerce Admin</p>
+        <p className="font-medium text-primary">ATLA KNOTS EVENTIVE Admin</p>
       </div>
 
       <div className="flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4">

@@ -4,10 +4,10 @@ export function Logo() {
   return (
     <div className="flex items-center">
       <Image
-        src="/images/logo/food_hub_logo.png"
+        src="/images/logo/new_ak_logo.png"
         width={200}
         height={70}
-        alt="FoodHub"
+        alt="ATLA KNOTS EVENTIVE"
         className="h-16 w-auto"
         priority
       />
