@@ -166,7 +166,7 @@ export default function ReportsManagement() {
         <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 mb-4">
           <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           <button
-            onClick={() => fetchReports(statusFilter === 'all' ? undefined : statusFilter)}
+            onClick={() => fetchReports()}
             className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline"
           >
             Retry

@@ -39,7 +39,7 @@ const mockReportDetails: Record<number, any> = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Authenticate admin
@@ -48,7 +48,8 @@ export async function GET(
       return unauthorizedResponse("Please login to access this resource");
     }
 
-    const reportId = parseInt(params.id);
+    const { id } = await params;
+    const reportId = parseInt(id);
     const reportDetails = mockReportDetails[reportId];
 
     if (!reportDetails) {

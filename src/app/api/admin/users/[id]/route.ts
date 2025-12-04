@@ -41,7 +41,7 @@ const mockUserDetails: Record<number, any> = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Authenticate admin
@@ -50,7 +50,8 @@ export async function GET(
       return unauthorizedResponse("Please login to access this resource");
     }
 
-    const userId = parseInt(params.id);
+    const { id } = await params;
+    const userId = parseInt(id);
     const userDetails = mockUserDetails[userId];
 
     if (!userDetails) {

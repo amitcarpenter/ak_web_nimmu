@@ -123,7 +123,7 @@ export default function PaymentMethodsPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-2xl">{getCardBrandIcon(method.brand)}</span>
+                        <span className="text-2xl">{method.brand ? getCardBrandIcon(method.brand) : <FiCreditCard />}</span>
                         <span className="text-sm font-semibold text-dark dark:text-white uppercase">
                           {method.brand}
                         </span>

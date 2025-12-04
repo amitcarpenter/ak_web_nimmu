@@ -49,13 +49,19 @@ export default function PreferencesPage() {
   };
 
   const togglePreference = (category: string, key: string) => {
-    setPreferences((prev) => ({
-      ...prev,
-      [category]: {
-        ...prev[category as keyof typeof prev],
-        [key]: !prev[category as keyof typeof prev][key],
-      },
-    }));
+    setPreferences((prev) => {
+      const categoryValue = prev[category as keyof typeof prev];
+      if (typeof categoryValue === 'object' && categoryValue !== null) {
+        return {
+          ...prev,
+          [category]: {
+            ...categoryValue,
+            [key]: !(categoryValue as any)[key],
+          },
+        };
+      }
+      return prev;
+    });
   };
 
   return (
