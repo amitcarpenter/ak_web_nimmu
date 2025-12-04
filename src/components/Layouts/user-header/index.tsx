@@ -33,9 +33,9 @@ export function UserHeader() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 dark:bg-gray-dark/95 backdrop-blur-md shadow-lg border-b border-stroke dark:border-stroke-dark' 
-          : 'bg-transparent'
+        isScrolled || isMobileMenuOpen
+          ? 'bg-white dark:bg-gray-dark shadow-lg border-b border-stroke dark:border-stroke-dark' 
+          : 'bg-white dark:bg-gray-dark lg:bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -111,10 +111,10 @@ export function UserHeader() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden overflow-hidden"
+              className="lg:hidden overflow-hidden bg-white dark:bg-gray-dark"
               id="mobile-menu"
             >
-              <nav className="flex flex-col space-y-4 py-4 border-t border-stroke dark:border-stroke-dark" aria-label="Mobile navigation">
+              <nav className="flex flex-col space-y-4 py-4 border-t border-stroke dark:border-stroke-dark bg-white dark:bg-gray-dark" aria-label="Mobile navigation">
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.href}

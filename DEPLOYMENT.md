@@ -61,6 +61,98 @@
 
 No environment variables required for basic deployment.
 
+## GitHub PR Preview Deployments (PR Website Live करना)
+
+Vercel automatically creates live preview URLs for every GitHub Pull Request. यहाँ step-by-step guide है:
+
+### Automatic PR Preview Setup
+
+1. **Vercel को GitHub से Connect करें:**
+   - Vercel Dashboard → Project → Settings → Git
+   - Ensure your GitHub repository is connected
+   - Vercel automatically detects new PRs
+
+2. **PR Create करें:**
+   ```bash
+   # New branch बनाएं
+   git checkout -b feature/your-feature-name
+   
+   # Changes commit करें
+   git add .
+   git commit -m "Your commit message"
+   
+   # GitHub पर push करें
+   git push origin feature/your-feature-name
+   ```
+
+3. **GitHub पर PR Open करें:**
+   - GitHub repository में जाएं
+   - "Compare & pull request" button click करें
+   - PR description लिखें और "Create pull request" करें
+
+4. **Vercel Automatically Deploy करेगा:**
+   - Vercel automatically detect करेगा कि नया PR है
+   - Build automatically start होगा
+   - 2-5 minutes में preview URL ready होगा
+
+5. **Preview URL Access करें:**
+   - **Method 1:** GitHub PR में comment देखें
+     - Vercel bot automatically comment करता है preview URL के साथ
+     - Example: `your-pr-preview-abc123.vercel.app`
+   
+   - **Method 2:** Vercel Dashboard से
+     - Vercel Dashboard → Your Project → Deployments
+     - PR deployment को देखें (branch name दिखेगा)
+     - Click करके preview URL open करें
+
+6. **Preview URL Share करें:**
+   - Preview URL को किसी को भी share कर सकते हैं
+   - यह automatically public होता है (अगर password protection off है)
+   - PR merge होने तक यह URL active रहेगा
+
+### PR Preview URL Format
+
+```
+https://your-project-git-branch-name-your-team.vercel.app
+```
+
+Example:
+```
+https://atla-knots-git-feature-new-ui-username.vercel.app
+```
+
+### Important Notes for PR Previews
+
+- ✅ **Automatic:** हर नए PR के लिए automatically deploy होता है
+- ✅ **Live Updates:** PR में नया commit push करने पर automatically rebuild होता है
+- ✅ **Public Access:** Default में public होता है (password protection off होने पर)
+- ✅ **Free:** Vercel free plan में unlimited preview deployments
+- ⚠️ **Temporary:** PR merge या close होने पर preview URL inactive हो सकता है
+
+### PR Preview को Public बनाना (अगर Private है)
+
+अगर PR preview private है और login require कर रहा है:
+
+1. Vercel Dashboard → Project → Settings → General
+2. "Password Protection" को **OFF** करें
+3. Settings → Git → "Preview Deployments" check करें
+4. Save करें
+
+### Manual PR Preview Deploy (Optional)
+
+अगर automatic preview नहीं मिल रहा:
+
+```bash
+# Vercel CLI install करें (अगर नहीं है)
+npm i -g vercel
+
+# Login करें
+vercel login
+
+# Specific branch के लिए deploy करें
+vercel --prod=false
+```
+
 ## Custom Domain
 
 1. Go to your project on Vercel dashboard
